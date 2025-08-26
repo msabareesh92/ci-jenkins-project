@@ -1,8 +1,8 @@
-pipeline{
-    agent any 
+pipeline {
+    agent any
 
-    stages{
-        stage('Build'){
+    stages {
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -20,42 +20,41 @@ pipeline{
                 echo "Listing files"
                 ls -la
 
-                echo "Installing Depe"
+                echo "Installing Dependencies"
                 npm ci
 
                 echo "Running Prod Build"
                 npm run build
 
-                echo listing workspace content
+                echo "Listing workspace content"
                 ls -la
-
-
                 '''
             }
         }
 
-        stage ('Test'){
-            steps{
-                
-                sh 'echo "Test Stage"'
+        stage('Test') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
                 sh '''
-                echo "Verify the index.htm in Build directory"
-                if test -f build/index.html;then
-                echo "Index.html found"
+                echo "Test Stage"
+                echo "Verify the index.html in build directory"
+
+                if test -f build/index.html; then
+                  echo "Index.html found"
                 else
-                echo "Index.html not found"
-                exit 1
+                  echo "Index.html not found"
+                  exit 1
                 fi
 
-                echo "Begining Test"
+                echo "Beginning Test"
                 npm test
-
-
                 '''
             }
         }
-
     }
-
-
 }
