@@ -36,9 +36,17 @@ pipeline{
 
         stage ('Test'){
             steps{
-                sh '''
-                echo "Test Stage"
                 
+                sh 'echo "Test Stage"'
+                sh '''
+                echo "Verify the index.htm in Build directory"
+                if test -f build/index.html;then
+                echo "Index.html found"
+                else
+                echo "Index.html not found"
+                exit 1
+                fi
+
 
                 '''
             }
