@@ -47,6 +47,9 @@ pipeline{
                 exit 1
                 fi
 
+                echo "Begining Test"
+                npm test
+
 
                 '''
             }
